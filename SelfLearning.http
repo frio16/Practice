@@ -1,0 +1,6 @@
+@SelfLearning_HostAddress = http://localhost:5008
+
+GET {{SelfLearning_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
