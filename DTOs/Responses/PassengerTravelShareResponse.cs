@@ -12,3 +12,4 @@ public class PassengerTravelShareResponse
     public bool TrainWasCreated { get; set; }
 }
 
+

@@ -26,8 +26,7 @@ public class PassengerService : IPassengerService
     public async Task<PassengerTravelShareResponse> CreatePassengerTravelShareAsync(
         CreatePassengerTravelShareRequest request)
     {
-        _logger.LogInformation("Processing passenger travel share for TrainNo: {TrainNo}, PNR: {Pnr}",
-            request.TrainNo, request.Pnr);
+        _logger.LogInformation("Processing passenger travel share for TrainNo: {TrainNo}, PNR: {Pnr}", request.TrainNo, request.Pnr);
 
         // Check if train exists in TrainMaster
         var existingTrain = await _context.Trains

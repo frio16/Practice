@@ -10,6 +10,18 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+// Add CORS for UI
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowUI", policy =>
+    {
+        policy.WithOrigins("http://localhost:8080", "http://127.0.0.1:8080", "http://localhost:3000", "http://127.0.0.1:3000")
+              .AllowAnyMethod()
+              .AllowAnyHeader()
+              .AllowCredentials();
+    });
+});
+
 // Add application services (Database, Repositories, Services, AutoMapper)
 builder.Services.AddApplicationServices(builder.Configuration);
 
@@ -28,6 +40,9 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+// Enable CORS
+app.UseCors("AllowUI");
+
 // Add exception middleware
 app.UseMiddleware<ExceptionMiddleware>();
 
@@ -43,25 +58,14 @@ using (var scope = app.Services.CreateScope())
     
     try
     {
-        logger.LogInformation("Ensuring database is created...");
-        var created = db.Database.EnsureCreated();
-        if (created)
-        {
-            logger.LogInformation("Database and tables created successfully.");
-        }
-        else
-        {
-            logger.LogInformation("Database already exists.");
-        }
-        
-        // Verify table exists
-        var canConnect = db.Database.CanConnect();
-        logger.LogInformation($"Can connect to database: {canConnect}");
+        logger.LogInformation("Applying pending migrations...");
+        db.Database.Migrate(); // <- Use this instead of EnsureCreated
+        logger.LogInformation("Database is up to date.");
     }
     catch (Exception ex)
     {
-        logger.LogError(ex, "An error occurred while creating the database.");
-        throw; // Re-throw to see the error
+        logger.LogError(ex, "An error occurred while applying migrations.");
+        throw;
     }
 }
 

@@ -7,3 +7,4 @@ public interface IPnrApiService
     Task<PnrApiResponse> GetTrainDetailsByPnrAsync(string pnr);
 }
 
+
